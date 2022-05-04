@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Shape : MonoBehaviour
 {
-    public int vertices;
-    public float size;
-    public int spawnRate;
+    public GameObject selectedShapeIndicator;
+    public int vertices = 0;
+    public float size = 0.5f;
+    public int spawnRate = 1;
     public int TimesSpawned
     {
         get
@@ -19,14 +20,18 @@ public class Shape : MonoBehaviour
             CheckSpawnCount();
         }
     }
-    private int timesSpawned;
+    private int timesSpawned = 0;
 
-    private void Start()
+    private void Awake()
     {
-        vertices = 0;
-        size = 0.5f;
-        spawnRate = 1;
-        timesSpawned = 0;
+        transform.localScale = new Vector3(size, size, size);
+    }
+
+    protected virtual void Update()
+    {
+        Move(new Rigidbody());
+
+        selectedShapeIndicator.transform.position = transform.position;
     }
 
     private void OnMouseDown()
@@ -34,6 +39,7 @@ public class Shape : MonoBehaviour
         if(SimManager.Instance.SpawnerSelected)
         {
             SimManager.Instance.SendReferenceForSpawn(this);
+            return;
         }
 
         SimManager.Instance.RequestSpawnShape(this);
@@ -47,8 +53,9 @@ public class Shape : MonoBehaviour
         }
     }
 
-    protected virtual void Move()
+    protected virtual void Move(Rigidbody rb)
     {
-        //do nothing
+        var speed = 2;
+        rb.AddForce(Vector3.forward * speed * Time.deltaTime, ForceMode.Impulse);
     }
 }

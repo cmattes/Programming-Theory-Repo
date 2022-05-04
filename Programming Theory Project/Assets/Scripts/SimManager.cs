@@ -24,15 +24,26 @@ public class SimManager : MonoBehaviour
 
     public void RequestSpawnShape(Shape shape)
     {
-        SpawnerSelected = true;
+        shape.selectedShapeIndicator.GetComponent<Renderer>().material.color = Color.red;
+        shape.selectedShapeIndicator.SetActive(true);
+        
         spawnerShape = shape;
-        // turn on red indicator
+        SpawnerSelected = true;
     }
 
     public void SendReferenceForSpawn(Shape refShape)
     {
+        if(string.Equals(spawnerShape.name, refShape.name))
+        {
+            spawnerShape.selectedShapeIndicator.SetActive(false);
+            SpawnerSelected = false;
+            return;
+        }
+        
+        refShape.selectedShapeIndicator.GetComponent<Renderer>().material.color = Color.blue;
+        refShape.selectedShapeIndicator.SetActive(true);
+
         referenceShape = refShape;
-        // turn on blue indicator
         StartCoroutine(PrepForSpawn());
     }
 
@@ -44,9 +55,12 @@ public class SimManager : MonoBehaviour
     IEnumerator PrepForSpawn()
     {
         yield return new WaitForSeconds(3);
-        SpawnerSelected = false;
-        // turn off red and blue indicators
+
+        spawnerShape.selectedShapeIndicator.SetActive(false);
+        referenceShape.selectedShapeIndicator.SetActive(false);
+
         SpawnShape();
         spawnerShape.TimesSpawned++;
+        SpawnerSelected = false;
     }
 }

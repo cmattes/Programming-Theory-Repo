@@ -6,25 +6,40 @@ public class Sphere : Shape
 {
     private Rigidbody sphereRb;
     private int randomNum;
-    [SerializeField] private float speed;
-    // Start is called before the first frame update
-    void Start()
+    protected float speed;
+
+    public Sphere()
     {
         vertices = 0;
         size = 1;
         spawnRate = 3;
+    }
+
+    public Sphere(float size, int spawnRate)
+    {
+        vertices = 0;
+        this.size = size;
+        this.spawnRate = spawnRate;
+    }
+
+    // Start is called before the first frame update
+    protected virtual void Start()
+    {
         TimesSpawned = 0;
+        speed = 5;
         sphereRb = GetComponent<Rigidbody>();
         StartCoroutine(GetRandomNumber());
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        Move();
+        Move(sphereRb);
+
+        selectedShapeIndicator.transform.position = transform.position;
     }
 
-    IEnumerator GetRandomNumber()
+    protected IEnumerator GetRandomNumber()
     {
         while (true)
         {
@@ -33,22 +48,22 @@ public class Sphere : Shape
         }
     }
 
-    protected override void Move()
+    protected override void Move(Rigidbody rb)
     {
         switch(randomNum)
         {
             case 0:
-                sphereRb.AddForce(Vector3.forward * speed * Time.deltaTime, ForceMode.Impulse);
+                rb.AddForce(Vector3.forward * speed * Time.deltaTime, ForceMode.Impulse);
                 break;
             case 1:
-                sphereRb.AddForce(Vector3.back * speed * Time.deltaTime, ForceMode.Impulse);
+                rb.AddForce(Vector3.back * speed * Time.deltaTime, ForceMode.Impulse);
                 break;
             case 2:
-                sphereRb.AddForce(Vector3.right * speed * Time.deltaTime, ForceMode.Impulse);
+                rb.AddForce(Vector3.right * speed * Time.deltaTime, ForceMode.Impulse);
                 break;
             case 3:
             default:
-                sphereRb.AddForce(Vector3.left * speed * Time.deltaTime, ForceMode.Impulse);
+                rb.AddForce(Vector3.left * speed * Time.deltaTime, ForceMode.Impulse);
                 break;
         }
     }
