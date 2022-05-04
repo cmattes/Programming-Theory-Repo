@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TitleMenu.unity
     guid: 35f357b4499094c109ac7b22e57fa988
+  - enabled: 1
+    path: Assets/Scenes/MainSim.unity
+    guid: 6d8031b11f5404c2db2d843543bc7826
   m_configObjects: {}
