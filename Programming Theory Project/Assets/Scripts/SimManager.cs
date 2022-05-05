@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SimManager : MonoBehaviour
 {
@@ -9,10 +12,18 @@ public class SimManager : MonoBehaviour
     public GameObject SpherePrefab;
     public GameObject SphubePrefab;
     public GameObject CubePrefab;
+    public GameObject InfoDataPrefab;
+    
+    public GameObject InfoContentVerticalScrollBar;
+    private Scrollbar verticalScrollbar;
+
+    public GameObject InfoContentView;
+    private Queue<GameObject> InfoQueue;
+
     public bool SpawnerSelected { get; private set; }
     private Shape spawnerShape;
     private Shape referenceShape;
-    
+
     private void Awake()
     {
         if(Instance != null)
@@ -24,8 +35,19 @@ public class SimManager : MonoBehaviour
         Instance = this;
         SpawnerSelected = false;
 
+        InfoQueue = new Queue<GameObject>();
+        verticalScrollbar = InfoContentVerticalScrollBar.GetComponent<Scrollbar>();
+
         CreateOriginalSphere();
         CreateOriginalSphere();
+    }
+
+    private void Update()
+    {
+        if(verticalScrollbar.value != 0)
+        {
+            verticalScrollbar.value = 0;
+        }
     }
 
     private void CreateOriginalSphere()
@@ -38,6 +60,11 @@ public class SimManager : MonoBehaviour
         sphere.GetComponent<Sphere>().Initialize(originalSize, originalSpawnRate);
     }
 
+    public void ExitMainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     public void RequestSpawnShape(Shape shape)
     {
         shape.selectedShapeIndicator.GetComponent<Renderer>().material.color = Color.red;
@@ -45,6 +72,21 @@ public class SimManager : MonoBehaviour
         
         spawnerShape = shape;
         SpawnerSelected = true;
+
+        AddInfoToUIPanel("Spawner shape selected; spawns left: " + (spawnerShape.spawnRate - spawnerShape.TimesSpawned));
+    }
+
+    private void AddInfoToUIPanel(string infoText)
+    {
+        GameObject infoData = Instantiate(InfoDataPrefab, InfoContentView.transform);
+        infoData.gameObject.GetComponent<TextMeshProUGUI>().text = infoText;
+        InfoQueue.Enqueue(infoData);
+
+        if(InfoQueue.Count > 15)
+        {
+            GameObject oldInfo = InfoQueue.Dequeue();
+            Destroy(oldInfo);
+        }
     }
 
     public void SendReferenceForSpawn(Shape refShape)
@@ -53,6 +95,7 @@ public class SimManager : MonoBehaviour
         {
             spawnerShape.selectedShapeIndicator.SetActive(false);
             SpawnerSelected = false;
+            AddInfoToUIPanel("Spawner selection canceled");
             return;
         }
         
@@ -60,6 +103,7 @@ public class SimManager : MonoBehaviour
         refShape.selectedShapeIndicator.SetActive(true);
 
         referenceShape = refShape;
+        AddInfoToUIPanel("Reference shape selected; spawning now!");
         StartCoroutine(PrepForSpawn());
     }
 
@@ -74,6 +118,8 @@ public class SimManager : MonoBehaviour
 
         spawnerShape.TimesSpawned++;
         SpawnerSelected = false;
+
+        AddInfoToUIPanel("New shape spawned!");
     }
 
     private void SpawnShape()
@@ -145,6 +191,12 @@ public class SimManager : MonoBehaviour
             spawnSpawnRate = 1;
         }
 
+        ParticleSystem spawnSparkles = spawnerShape.GetComponentInChildren<ParticleSystem>();
+        spawnSparkles.Play();
+
+        AudioSource spawnSound = spawnerShape.GetComponentInChildren<AudioSource>();
+        spawnSound.Play();
+
         GameObject cube = Instantiate(CubePrefab, spawnerShape.transform.position + Vector3.up, referenceShape.transform.rotation);
 
         cube.GetComponent<Cube>().Initialize(spawnSize, spawnSpawnRate);
@@ -163,6 +215,12 @@ public class SimManager : MonoBehaviour
             spawnSpawnRate = 4;
         }
 
+        ParticleSystem spawnSparkles = spawnerShape.GetComponentInChildren<ParticleSystem>();
+        spawnSparkles.Play();
+
+        AudioSource spawnSound = spawnerShape.GetComponentInChildren<AudioSource>();
+        spawnSound.Play();
+
         GameObject sphere = Instantiate(SpherePrefab, spawnerShape.transform.position + Vector3.up, referenceShape.transform.rotation);
 
         sphere.GetComponent<Sphere>().Initialize(spawnSize, spawnSpawnRate);
@@ -176,6 +234,12 @@ public class SimManager : MonoBehaviour
         {
             spawnSpawnRate = 2;
         }
+
+        ParticleSystem spawnSparkles = spawnerShape.GetComponentInChildren<ParticleSystem>();
+        spawnSparkles.Play();
+
+        AudioSource spawnSound = spawnerShape.GetComponentInChildren<AudioSource>();
+        spawnSound.Play();
 
         GameObject sphube = Instantiate(SphubePrefab, spawnerShape.transform.position + Vector3.up, referenceShape.transform.rotation);
 

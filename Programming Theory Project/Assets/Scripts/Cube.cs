@@ -6,6 +6,8 @@ public class Cube : Shape
 {
     private Rigidbody cubeRb;
     private float speed;
+    private float upSpeed;
+    private int randomNum;
 
     public void Initialize(float size, int spawnRate)
     {
@@ -14,8 +16,10 @@ public class Cube : Shape
         this.spawnRate = spawnRate;
 
         TimesSpawned = 0;
-        speed = 5;
+        speed = 20;
+        upSpeed = 5;
         cubeRb = GetComponent<Rigidbody>();
+        StartCoroutine(GetRandomNumber());
 
         base.Initialize();
     }
@@ -33,19 +37,30 @@ public class Cube : Shape
         selectedShapeIndicator.transform.position = transform.position;
     }
 
+    protected IEnumerator GetRandomNumber()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.25f);
+            randomNum = Random.Range(0, 3);
+        }
+    }
+
     protected override void Move(Rigidbody rb)
     {
-        switch (TimesSpawned)
+        switch (randomNum)
         {
             case 0:
-                rb.AddForce((Vector3.forward + Vector3.up) * speed * Time.deltaTime, ForceMode.Impulse);
+                rb.AddForce(Vector3.forward * speed * Time.deltaTime, ForceMode.Impulse);
+                rb.AddForce(Vector3.up * upSpeed * Time.deltaTime, ForceMode.Impulse);
                 break;
             case 1:
-                rb.AddForce((Vector3.back + Vector3.up) * speed * Time.deltaTime, ForceMode.Impulse);
+                rb.AddForce(Vector3.back * speed * Time.deltaTime, ForceMode.Impulse);
+                rb.AddForce(Vector3.up * upSpeed * Time.deltaTime, ForceMode.Impulse);
                 break;
             case 2:
             default:
-                rb.AddForce(Vector3.up * Time.deltaTime, ForceMode.Impulse);
+                rb.AddForce(Vector3.up * upSpeed * Time.deltaTime, ForceMode.Impulse);
                 break;
         }
     }
