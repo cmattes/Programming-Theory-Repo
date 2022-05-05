@@ -6,6 +6,9 @@ public class SimManager : MonoBehaviour
 {
     public static SimManager Instance;
 
+    public GameObject SpherePrefab;
+    public GameObject SphubePrefab;
+    public GameObject CubePrefab;
     public bool SpawnerSelected { get; private set; }
     private Shape spawnerShape;
     private Shape referenceShape;
@@ -20,6 +23,19 @@ public class SimManager : MonoBehaviour
 
         Instance = this;
         SpawnerSelected = false;
+
+        CreateOriginalSphere();
+        CreateOriginalSphere();
+    }
+
+    private void CreateOriginalSphere()
+    {
+        float originalSize = 1;
+        int originalSpawnRate = 3;
+
+        GameObject sphere = Instantiate(SpherePrefab, Vector3.zero + Vector3.up, new Quaternion());
+
+        sphere.GetComponent<Sphere>().Initialize(originalSize, originalSpawnRate);
     }
 
     public void RequestSpawnShape(Shape shape)
@@ -33,7 +49,7 @@ public class SimManager : MonoBehaviour
 
     public void SendReferenceForSpawn(Shape refShape)
     {
-        if(string.Equals(spawnerShape.name, refShape.name))
+        if(refShape.selectedShapeIndicator.activeSelf)
         {
             spawnerShape.selectedShapeIndicator.SetActive(false);
             SpawnerSelected = false;
@@ -45,6 +61,19 @@ public class SimManager : MonoBehaviour
 
         referenceShape = refShape;
         StartCoroutine(PrepForSpawn());
+    }
+
+    IEnumerator PrepForSpawn()
+    {
+        yield return new WaitForSeconds(3);
+
+        SpawnShape();
+
+        spawnerShape.selectedShapeIndicator.SetActive(false);
+        referenceShape.selectedShapeIndicator.SetActive(false);
+
+        spawnerShape.TimesSpawned++;
+        SpawnerSelected = false;
     }
 
     private void SpawnShape()
@@ -116,9 +145,9 @@ public class SimManager : MonoBehaviour
             spawnSpawnRate = 1;
         }
 
-        Shape cube = new Cube(spawnSize, spawnSpawnRate);
+        GameObject cube = Instantiate(CubePrefab, spawnerShape.transform.position + Vector3.up, referenceShape.transform.rotation);
 
-        Instantiate(cube, spawnerShape.transform.position + Vector3.up, referenceShape.transform.rotation);
+        cube.GetComponent<Cube>().Initialize(spawnSize, spawnSpawnRate);
     }
 
     private void SpawnSphere(float spawnSize)
@@ -134,9 +163,9 @@ public class SimManager : MonoBehaviour
             spawnSpawnRate = 4;
         }
 
-        Shape sphere = new Sphere(spawnSize, spawnSpawnRate);
+        GameObject sphere = Instantiate(SpherePrefab, spawnerShape.transform.position + Vector3.up, referenceShape.transform.rotation);
 
-        Instantiate(sphere, spawnerShape.transform.position + Vector3.up, referenceShape.transform.rotation);
+        sphere.GetComponent<Sphere>().Initialize(spawnSize, spawnSpawnRate);
     }
 
     private void SpawnSphube(int spawnVertices, float spawnSize)
@@ -148,21 +177,8 @@ public class SimManager : MonoBehaviour
             spawnSpawnRate = 2;
         }
 
-        Shape sphube = new Sphube(spawnVertices, spawnSize, spawnSpawnRate);
+        GameObject sphube = Instantiate(SphubePrefab, spawnerShape.transform.position + Vector3.up, referenceShape.transform.rotation);
 
-        Instantiate(sphube, spawnerShape.transform.position + Vector3.up, referenceShape.transform.rotation);
-    }
-
-    IEnumerator PrepForSpawn()
-    {
-        yield return new WaitForSeconds(3);
-
-        SpawnShape();
-
-        spawnerShape.selectedShapeIndicator.SetActive(false);
-        referenceShape.selectedShapeIndicator.SetActive(false);
-
-        spawnerShape.TimesSpawned++;
-        SpawnerSelected = false;
+        sphube.GetComponent<Sphube>().Initialize(spawnVertices, spawnSize, spawnSpawnRate);
     }
 }

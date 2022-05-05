@@ -8,14 +8,35 @@ public class Sphube : Sphere
     [SerializeField] private GameObject ube;
     private Rigidbody sphubeRb;
 
-    public Sphube(int vertices, float size, int spawnRate)
+    public void Initialize(int vertices, float size, int spawnRate)
     {
         this.vertices = vertices;
         this.size = size;
         this.spawnRate = spawnRate;
+
+        DetermineShapeLook();
+
+        TimesSpawned = 0;
+        speed = 5;
+        sphubeRb = GetComponent<Rigidbody>();
+        StartCoroutine(GetRandomNumber());
+
+        base.Initialize();
     }
 
-    protected override void Start()
+    protected override void Update()
+    {
+        if (!initialized)
+        {
+            return;
+        }
+
+        Move(sphubeRb);
+
+        selectedShapeIndicator.transform.position = transform.position;
+    }
+
+    private void DetermineShapeLook()
     {
         switch (vertices)
         {
@@ -44,17 +65,5 @@ public class Sphube : Sphere
                 sph.transform.localScale = new Vector3(1, 1, 1);
                 break;
         }
-
-        TimesSpawned = 0;
-        speed = 5;
-        sphubeRb = GetComponent<Rigidbody>();
-        StartCoroutine(GetRandomNumber());
-    }
-
-    protected override void Update()
-    {
-        Move(sphubeRb);
-
-        selectedShapeIndicator.transform.position = transform.position;
     }
 }

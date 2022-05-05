@@ -8,32 +8,28 @@ public class Sphere : Shape
     private int randomNum;
     protected float speed;
 
-    public Sphere()
-    {
-        vertices = 0;
-        size = 1;
-        spawnRate = 3;
-    }
-
-    public Sphere(float size, int spawnRate)
+    public void Initialize(float size, int spawnRate)
     {
         vertices = 0;
         this.size = size;
         this.spawnRate = spawnRate;
-    }
 
-    // Start is called before the first frame update
-    protected virtual void Start()
-    {
         TimesSpawned = 0;
         speed = 5;
         sphereRb = GetComponent<Rigidbody>();
         StartCoroutine(GetRandomNumber());
+
+        base.Initialize();
     }
 
     // Update is called once per frame
     protected override void Update()
     {
+        if (!initialized)
+        {
+            return;
+        }
+
         Move(sphereRb);
 
         selectedShapeIndicator.transform.position = transform.position;

@@ -7,31 +7,27 @@ public class Cube : Shape
     private Rigidbody cubeRb;
     private float speed;
 
-    public Cube()
-    {
-        vertices = 8;
-        size = 1;
-        spawnRate = 2;
-    }
-
-    public Cube(float size, int spawnRate)
+    public void Initialize(float size, int spawnRate)
     {
         vertices = 8;
         this.size = size;
         this.spawnRate = spawnRate;
-    }
 
-    // Start is called before the first frame update
-    protected virtual void Start()
-    {
         TimesSpawned = 0;
         speed = 5;
         cubeRb = GetComponent<Rigidbody>();
+
+        base.Initialize();
     }
 
     // Update is called once per frame
     protected override void Update()
     {
+        if (!initialized)
+        {
+            return;
+        }
+
         Move(cubeRb);
 
         selectedShapeIndicator.transform.position = transform.position;

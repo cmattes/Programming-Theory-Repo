@@ -20,15 +20,22 @@ public class Shape : MonoBehaviour
             CheckSpawnCount();
         }
     }
+    protected bool initialized = false;
     private int timesSpawned = 0;
 
-    private void Awake()
+    protected virtual void Initialize()
     {
         transform.localScale = new Vector3(size, size, size);
+        initialized = true;
     }
 
     protected virtual void Update()
     {
+        if (!initialized)
+        {
+            return;
+        }
+
         Move(new Rigidbody());
 
         selectedShapeIndicator.transform.position = transform.position;
@@ -36,7 +43,12 @@ public class Shape : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if(SimManager.Instance.SpawnerSelected)
+        if (!initialized)
+        {
+            return;
+        }
+
+        if (SimManager.Instance.SpawnerSelected)
         {
             SimManager.Instance.SendReferenceForSpawn(this);
             return;
