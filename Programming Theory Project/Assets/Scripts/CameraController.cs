@@ -6,7 +6,7 @@ public class CameraController : MonoBehaviour
 {
     public GameObject playerBody;
     public float xRotation = 0f;
-    private float mouseSensitivity = 500;
+    private float mouseSensitivity = 100;
     private float movementSpeed = 10;
 
     private const float UpperZBound = 24.0f;
