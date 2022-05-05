@@ -20,7 +20,7 @@ public class SimManager : MonoBehaviour
     public GameObject InfoContentView;
     private Queue<GameObject> InfoQueue;
 
-    public bool SpawnerSelected { get; private set; }
+    public bool SpawnerSelected { get; private set; } // ENCAPSULATION
     private Shape spawnerShape;
     private Shape referenceShape;
 
@@ -65,7 +65,7 @@ public class SimManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void RequestSpawnShape(Shape shape)
+    public void RequestSpawnShape(Shape shape) // POLYMORPHISM
     {
         shape.selectedShapeIndicator.GetComponent<Renderer>().material.color = Color.red;
         shape.selectedShapeIndicator.SetActive(true);
@@ -89,7 +89,7 @@ public class SimManager : MonoBehaviour
         }
     }
 
-    public void SendReferenceForSpawn(Shape refShape)
+    public void SendReferenceForSpawn(Shape refShape) // POLYMORPHISM
     {
         if(refShape.selectedShapeIndicator.activeSelf)
         {

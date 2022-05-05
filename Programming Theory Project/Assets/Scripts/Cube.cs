@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// INHERITANCE
 public class Cube : Shape
 {
     private Rigidbody cubeRb;
@@ -24,7 +25,7 @@ public class Cube : Shape
         base.Initialize();
     }
 
-    // Update is called once per frame
+    // POLYMORPHISM
     protected override void Update()
     {
         if (!initialized)
@@ -46,6 +47,7 @@ public class Cube : Shape
         }
     }
 
+    // POLYMORPHISM
     protected override void Move(Rigidbody rb)
     {
         switch (randomNum)

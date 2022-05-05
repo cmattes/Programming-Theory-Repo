@@ -8,7 +8,7 @@ public class Shape : MonoBehaviour
     public int vertices = 0;
     public float size = 0.5f;
     public int spawnRate = 1;
-    public int TimesSpawned
+    public int TimesSpawned // ENCAPSULATION
     {
         get
         {
@@ -41,6 +41,7 @@ public class Shape : MonoBehaviour
         selectedShapeIndicator.transform.position = transform.position;
     }
 
+    // ABSTRACTION
     private void OnMouseDown()
     {
         if (!initialized)
@@ -57,6 +58,7 @@ public class Shape : MonoBehaviour
         SimManager.Instance.RequestSpawnShape(this);
     }
 
+    // ABSTRACTION
     private void CheckSpawnCount()
     {
         if(timesSpawned == spawnRate)

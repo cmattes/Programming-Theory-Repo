@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// INHERITANCE
 public class Sphube : Sphere
 {
     [SerializeField] private GameObject sph;
@@ -24,6 +25,7 @@ public class Sphube : Sphere
         base.Initialize();
     }
 
+    // POLYMORPHISM
     protected override void Update()
     {
         if (!initialized)

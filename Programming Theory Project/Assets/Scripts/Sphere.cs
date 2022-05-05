@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// INHERITANCE
 public class Sphere : Shape
 {
     private Rigidbody sphereRb;
@@ -22,7 +23,7 @@ public class Sphere : Shape
         base.Initialize();
     }
 
-    // Update is called once per frame
+    // POLYMORPHISM
     protected override void Update()
     {
         if (!initialized)
@@ -44,6 +45,7 @@ public class Sphere : Shape
         }
     }
 
+    // POLYMORPHISM
     protected override void Move(Rigidbody rb)
     {
         switch(randomNum)
